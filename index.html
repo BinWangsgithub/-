@@ -790,28 +790,22 @@
             bindEvents() {
                 this.handleKeyDown = this.handleKeyDown.bind(this);
                 this.handleKeyUp = this.handleKeyUp.bind(this);
+                this.handleTouchStart = this.handleTouchStart.bind(this);  // 添加触摸事件绑定
                 document.addEventListener('keydown', this.handleKeyDown);
                 document.addEventListener('keyup', this.handleKeyUp);
+                this.canvas.addEventListener('touchstart', this.handleTouchStart);  // 添加触摸事件监听
             }
 
             removeEvents() {
                 document.removeEventListener('keydown', this.handleKeyDown);
                 document.removeEventListener('keyup', this.handleKeyUp);
+                this.canvas.removeEventListener('touchstart', this.handleTouchStart);  // 移除触摸事件监听
             }
 
             handleKeyDown(event) {
                 if (event.code === 'Space') {
                     event.preventDefault();
-                    if (this.gameOver) {
-                        this.reset();
-                        this.start();
-                        return;
-                    }
-                    if (!this.dino.isJumping && this.dino.y >= 150) {
-                        this.dino.isJumping = true;
-                        this.dino.dy = this.dino.jumpForce;
-                        this.audio.playJump();
-                    }
+                    this.jump();
                 }
             }
 
@@ -820,6 +814,24 @@
                     if (this.dino.dy < -2) {
                         this.dino.dy = -2;
                     }
+                }
+            }
+
+            handleTouchStart(event) {
+                event.preventDefault();
+                this.jump();
+            }
+
+            jump() {
+                if (this.gameOver) {
+                    this.reset();
+                    this.start();
+                    return;
+                }
+                if (!this.dino.isJumping && this.dino.y >= 150) {
+                    this.dino.isJumping = true;
+                    this.dino.dy = this.dino.jumpForce;
+                    this.audio.playJump();
                 }
             }
 
